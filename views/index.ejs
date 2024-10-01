@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptocurrency Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/style.css"> 
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Cryptocurrency Dashboard</h1>
+
+        <!-- Form to search for cryptocurrency price -->
+        <form action="/" method="GET" class="mt-4">
+            <div class="form-group">
+                <label for="symbol">Enter Cryptocurrency Symbol (e.g., BTC, ETH):</label>
+                <input type="text" id="symbol" name="symbol" class="form-control" placeholder="Enter symbol" value="<%= symbol ? symbol : '' %>">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Check Price</button>
+        </form>
+
+        <!-- Display price if user searched for a symbol -->
+        <% if (priceData) { %>
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Price of <%= priceData.symbol.toUpperCase() %>:</h5>
+                    <p>Current Price: $<%= priceData.current_price %></p>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Categories: Top Gainers and Top Losers -->
+        <div class="mt-5 row">
+            <div class="col-md-6">
+                <h2 class="text-center">Top Gainers (24h)</h2>
+                <% if (topGainers.length > 0) { %>
+                    <ul class="list-group mt-3">
+                        <% topGainers.forEach(coin => { %>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong><%= coin.name %> (<%= coin.symbol.toUpperCase() %>)</strong>
+                                <span>Price: $<%= coin.current_price %>, Change: <span class="text-success"><%= coin.price_change_percentage_24h.toFixed(2) %>%</span></span>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No gainers data available.</p>
+                <% } %>
+            </div>
+
+            <div class="col-md-6">
+                <h2 class="text-center">Top Losers (24h)</h2>
+                <% if (topLosers.length > 0) { %>
+                    <ul class="list-group mt-3">
+                        <% topLosers.forEach(coin => { %>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <strong><%= coin.name %> (<%= coin.symbol.toUpperCase() %>)</strong>
+                                <span>Price: $<%= coin.current_price %>, Change: <span class="text-danger"><%= coin.price_change_percentage_24h.toFixed(2) %>%</span></span>
+                            </li>
+                        <% }); %>
+                    </ul>
+                <% } else { %>
+                    <p>No losers data available.</p>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Market Overview -->
+        <div class="mt-5">
+            <h2>Global Cryptocurrency Market Overview</h2>
+            <% if (marketOverview) { %>
+                <p>Total Market Cap: $<%= marketOverview.total_market_cap.usd.toLocaleString() %></p>
+                <p>Total 24h Volume: $<%= marketOverview.total_volume.usd.toLocaleString() %></p>
+                <p>Bitcoin Dominance: <%= marketOverview.market_cap_percentage.btc.toFixed(2) %>%</p>
+            <% } else { %>
+                <p>No market overview data available.</p>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>
